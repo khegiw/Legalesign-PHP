@@ -2,6 +2,7 @@
 namespace Legalesign;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 
 /**
  * Authenticates and submits API calls to Legalesign.
@@ -43,7 +44,7 @@ class Api {
      * @param string                $method     The HTTP method to use for the request.
      * @param string                $endpoint   The API endpoint to request.
      * @param array?                $data       The data to send with the request, if any.
-     * @return GuzzleHttp\Response              The response object, deserialized from response JSON.
+     * @return Psr7\Response                    The response object, deserialized from response JSON.
      */
     public static function requestRaw($method, $endpoint, $data = [])
     {
@@ -59,14 +60,19 @@ class Api {
 
         // Check if the request is a GET request (in which case we should send the data as query string paramaters), or
         // any other type of request (in which case we should send the data as JSON in the request body).
-        $dataLocation = 'json';
         if ($method === 'GET') {
-            $dataLocation = 'query';
+            $query = $data;
+            $query['format'] = 'json';
+            $json = null;
+        } else {
+            $json = $data;
+            $query = ['format' => 'json'];
         }
 
         // Do the request
-        $response = self::$api->request($method, $endpoint), [
-            $dataLocation => $data,
+        $response = self::$api->request($method, self::ApiBase.$endpoint, [
+            'json' => $json,
+            'query' => $query,
             'headers' => [
                 'Authorization' => 'ApiKey '.implode(':', [self::$userId, self::$secret]),
                 'Content-Type' => 'application/json'
@@ -103,7 +109,7 @@ class Api {
      * @return object               The response object, deserialized from response JSON.
      */
     public static function get($endpoint, $data = []) {
-        self::Request('GET', $endpoint, $data);
+        return self::Request('GET', $endpoint, $data);
     }
 
     /**
@@ -114,7 +120,7 @@ class Api {
      * @return object               The response object, deserialized from response JSON.
      */
     public static function post($endpoint, $data = []) {
-        self::Request('POST', $endpoint, $data);
+        return self::Request('POST', $endpoint, $data);
     }
 
     // # Internal
@@ -122,9 +128,9 @@ class Api {
     /**
      * Checks the API response to see whether it succeeded and, if not, throws the appropriate error.
      *
-     * @param GuzzleHttp\Response   $response   The Legalesign API response.
+     * @param Psr7\Response $response   The Legalesign API response.
      */
-    private static function checkResponseForErrors(GuzzleHttp\Response $response)
+    private static function checkResponseForErrors(Psr7\Response $response)
     {
         switch ($response->getStatusCode()) {
             case 200:
@@ -160,9 +166,7 @@ class Api {
         // Set up the base Guzzle object to use for all requests. We won't hardcode the Authorization header here,
         // because the credentials will only be set for Laravel. We'll generate that header each time any request is
         // made.
-        self::$legalesign = new Client([                                                                    
-            'base_uri' => self::ApiBase
-        ]);
+        self::$api = new Client();
     }
 }
 Api::boot();

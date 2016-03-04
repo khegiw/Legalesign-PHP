@@ -11,8 +11,12 @@ namespace Legalesign\Exceptions;
 class ApiException extends \Exception {
     public function __construct($status, $message = null)
     {
+        $newMessage = $this->httpCodeToMessage($status);
+        if (isset($newMessage)) {
+            $message = $newMessage;
+        }
         if (!isset($message) || !trim($message)) {
-            $message = $this->httpCodeToMessage($code);
+            $message = $status;
         }
 
         parent::__construct('Legalesign API replied: '.$message, $status);
@@ -25,17 +29,18 @@ class ApiException extends \Exception {
      * @param  int      $code   The HTTP status code
      * @return string?          The reason message for the failure, or NULL if unknown.
      */
-    private function httpCodeToMessage($code)
+    private function httpCodeToMessage($status)
     {
         switch ($status) {
-            case 400:
-                return 'Bad request; perhaps the POST request failed?';
             case 404:
-                return 'That API endpoint does not exist.';
+                return 'Request failed. This usually indicates a required property was missing, the document with the'
+                        .'ID requested does not exist, or you tried to use a template for a number of signers not'
+                        .'matching the sent number.';
             case 405:
                 return 'Method not allowed.';
+            case 400:
             case 500:
-                return 'Server error; perhaps you have malformed JSON or are missing a required property?';
+                return 'Legalesign server error. (Perhaps the request was malformed.)';
             default:
                 return null;
         }

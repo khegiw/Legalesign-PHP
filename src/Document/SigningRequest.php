@@ -39,7 +39,7 @@ class SigningRequest {
     protected $signers = [];
     protected $cc = [];
 
-    protected $_required = ['group', 'name', 'signers'];
+    protected $_required = ['groupId', 'name', 'signers'];
     
     public function sendWithHtml($html)
     {
@@ -48,12 +48,12 @@ class SigningRequest {
 
     public function sendWithTemplateHtml($template)
     {
-        return $this->doRequest(['template' => $template]);
+        return $this->doRequest(['template' => '/api/v1/template/'.$template.'/']);
     }
 
     public function sendWithTemplatePdf($template)
     {
-        return $this->doRequest(['templatepdf' => $template]);
+        return $this->doRequest(['templatepdf' => '/api/v1/templatepdf/'.$template.'/']);
     }
 
     // # Property setters
@@ -139,11 +139,11 @@ class SigningRequest {
      */
     protected function doRequest($with = [])
     {
-        $data = array_merge($this->generateLegalesignRequestParams, $with);
+        $data = array_merge($this->generateLegalesignRequestParams(), $with);
         $response = Legalesign\Api::requestRaw('POST', 'document/', $data);
 
         // Get the document's ID, which is in the URL Legalesign redirects to after a successful creation.
-        $apiEntityUrl = $docResponse->getHeader('Location')[0];
+        $apiEntityUrl = $response->getHeader('Location')[0];
         $id = call_user_func(function($parts){ return $parts[count($parts) - 2]; }, explode('/', $apiEntityUrl));
 
         return Legalesign\Document::find($id);
@@ -223,4 +223,4 @@ class SigningRequest {
 
         return $request;
     }
-
+}

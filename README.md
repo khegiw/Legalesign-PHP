@@ -25,6 +25,14 @@ return [
 ];
 ```
 
+### Create a signer
+```php
+$me = new Legalesign\Signer;
+$me->firstName = 'Tyler';
+$me->lastName = 'Menezes';
+$me->email = 'tylermenezes@protonmail.ch';
+```
+
 ### Create a signing request
 
 ```php
@@ -32,7 +40,7 @@ $document = Legalesign\Document::create()
     ->name('Waiver of Liability')
     ->group('mygroup')
     ->addSigner($me)
-    ->sendWithTemplate('mytemplate');
+    ->sendWithTemplatePdf('mytemplate');
 ```
 
 The `Document::create()` method actually returns a `Document\SigningRequest` object, which will allow you to configure
@@ -67,8 +75,7 @@ All of these methods return a `Document`, of which you should generally save the
 ```php
 $document = Legalesign\Document::find('my-document-id');
 if ($document->downloadReady) {
-    header('Location: '.$document->getDownloadUrl());
-    exit;
+    file_put_contents('/tmp/test.pdf', $document->getPdf());
 } else {
     echo 'Document is not yet ready!';
 }

@@ -28,23 +28,28 @@ class Document {
         $this->id = $id;
 
         $info = Api::get('document/'.$id.'/');
-        $this->created_at = Carbon::parse($info['created']);
-        $this->updated_at = Carbon::parse($info['updated']);
-        $this->signed_at = isset($info['sign_time']) ? Carbon::parse($info['sign_time']) : null;
+        $this->created_at = Carbon::parse($info->created);
+        if (isset($info->updated)) {
+            $this->updated_at = Carbon::parse($info->updated);
+        } else {
+            $this->updated_at = Carbon::parse($info->created);
+        }
+        $this->signed_at = isset($info->sign_time) ? Carbon::parse($info->sign_time) : null;
 
-        $this->status = $this->statusCodeToStatus($info['status']);
-        $this->downloadReady = $info['download_final'];
-        $this->downloadHash = $info['hash_value'];
-
+        $this->status = $this->statusCodeToStatus($info->status);
+        $this->downloadReady = $info->download_final;
+        $this->downloadHash = $info->hash_value;
         $this->signers = array_map(function($signerInfo) {
             $signer = new Signer;
+            $signer->id = call_user_func(function($parts){ return $parts[count($parts) - 2]; },
+                                          explode('/', $signerInfo[0]));
             $signer->firstName = $signerInfo[1];
             $signer->lastName = $signerInfo[2];
             $signer->email = $signerInfo[3];
             $signer->behalfOf = $signerInfo[4];
             $signer->setStatusCode($signerInfo[6]);
             $signer->order = $signerInfo[7];
-        }, $info['signers']);
+        }, $info->signers);
     }
 
     /**
@@ -70,7 +75,7 @@ class Document {
      *
      *  @return string      The URL at which the PDF can be downloaded
      */
-    public function getDownloadUrl()
+    public function getPdf()
     {
         if (!$this->downloadReady) return null;
         return Api::requestRaw('get', 'pdf/' . $this->id . '/')->getBody();
@@ -117,8 +122,9 @@ class Document {
      */
     protected function statusCodeToStatus($code)
     {
+        if (!isset($code) || !is_numeric($code)) return null;
         $codes = [
-            10 => 'sent'
+            10 => 'sent',
             20 => 'fields_complete',
             30 => 'signed',
             40 => 'cancelled'

@@ -8,6 +8,7 @@ namespace Legalesign;
  * @author Tyler Menezes <tylermenezes@protonmail.ch>
  */
 class Signer {
+    public $id;
     public $firstName;
     public $lastName;
     public $email;
@@ -18,10 +19,27 @@ class Signer {
 
     public $status;
     public $order;
-    $signer->setStatusCode($signerInfo[6]);
 
-    public setStatusCode($statusCode)
+    /**
+     *  Sends a reminder to sign to the user.
+     *
+     * @param string? $text     Optional, text to include in the reminder message.
+     */
+    public function remind($text = null)
     {
+        $id = preg_replace("/[^A-Za-z0-9\- ]/", '', $this->id);
+        Api::post('signer/'.$id.'/send-reminder/', ['text' => $text]);
+    }
+
+    
+    /**
+     *  Sets the status message to something helpful, based on the unhelpful status codes provided by legalesign.
+     *
+     * @param int $statusCode   The Legalesign status code
+     */
+    public function setStatusCode($statusCode)
+    {
+        if (!isset($statusCode)) return null;
         $codes = [
             5 => 'scheduled',
             10 => 'sent',
@@ -32,6 +50,6 @@ class Signer {
             50 => 'downloaded'
         ];
 
-        $this->status = $codes[$code];
+        $this->status = $codes[$statusCode];
     }
 }

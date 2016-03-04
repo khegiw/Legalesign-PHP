@@ -4,6 +4,10 @@ A PHP-based interface to Legalesign.
 
 ## Use
 
+Include it with Composer:
+
+`composer require tylermenezes/legalesign-php`
+
 ### Set your credentials
 You can view your API credentials at the bottom of [your user page](https://legalesign.com/acc/settings/).
 Non-sandboxed use currently requires a paid plan, but you can test your integration in the sandbox. (When in sandbox

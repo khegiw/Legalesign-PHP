@@ -1,0 +1,19 @@
+{
+    "name": "tylermenezes/legalesign-php",
+    "description": "Library for working with the Legalesign API.",
+    "require": {
+        "guzzlehttp/guzzle": "^6.1"
+    },
+    "license": "Artistic",
+    "authors": [
+        {
+            "name": "Tyler Menezes",
+            "email": "tylermenezes@protonmail.ch"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Legalesign\\": "src/"
+        }
+    }
+}

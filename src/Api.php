@@ -30,7 +30,7 @@ class Api {
      *                      username). Should be a 30-ish character string of hex digits.
      * @param mixed $secret Your API secret. Should be a 40-ish character string of hex digits.
      */
-    public static function Credentials($userId, $secret)
+    public static function credentials($userId, $secret)
     {
         self::$userId = $userId;
         self::$secret = $secret;
@@ -45,7 +45,7 @@ class Api {
      * @param array?                $data       The data to send with the request, if any.
      * @return GuzzleHttp\Response              The response object, deserialized from response JSON.
      */
-    public static function RequestRaw($method, $endpoint, $data = [])
+    public static function requestRaw($method, $endpoint, $data = [])
     {
         // Sanity checking and sanatizing
         if (!isset(self::$userId) || !self::$userId || !isset(self::$secret) || !self::$secret) {
@@ -90,9 +90,9 @@ class Api {
      * @param array?    $data       The data to send with the request, if any.
      * @return object               The response object, deserialized from response JSON.
      */
-    public static function Request($method, $endpoint, $data = [])
+    public static function request($method, $endpoint, $data = [])
     {
-        return json_decode(self::RequestRaw($method, $endpoint, $data)->getBody());
+        return json_decode(self::requestRaw($method, $endpoint, $data)->getBody());
     }
 
     /**
@@ -102,7 +102,7 @@ class Api {
      * @param array?    $data       The data to send with the request, if any.
      * @return object               The response object, deserialized from response JSON.
      */
-    public static function Get($endpoint, $data = []) {
+    public static function get($endpoint, $data = []) {
         self::Request('GET', $endpoint, $data);
     }
 
@@ -113,7 +113,7 @@ class Api {
      * @param array?    $data       The data to send with the request, if any.
      * @return object               The response object, deserialized from response JSON.
      */
-    public static function Post($endpoint, $data = []) {
+    public static function post($endpoint, $data = []) {
         self::Request('POST', $endpoint, $data);
     }
 
@@ -129,9 +129,10 @@ class Api {
         switch ($response->getStatusCode()) {
             case 200:
             case 201:
-            case 202:
             case 204:
                 return;
+            case 202:
+                throw new Exceptions\RetrievingException();
             case 401:
                 throw new Exceptions\AuthenticationException();
             case 429:
@@ -147,13 +148,13 @@ class Api {
      * Performs first-time setup for static properties of this class. Do not call this method, it will be automatically
      * called as soon as this file is loaded.
      */
-    public static function Boot()
+    public static function boot()
     {
         // Check if this is Laravel; if so, automatically set the credentials from the configuration file.
         if (function_exists('config')) { // Laravel 5 and up
-            self::Credentials(config('legalesign.userid'), config('legalesign.secret'));
+            self::credentials(config('legalesign.userid'), config('legalesign.secret'));
         } elseif (class_exists('\\Config')) { // Laravel 4.2 and below
-            self::Credentials(\Config::get('legalesign.userid'), \Config::get('legalesign.secret'));
+            self::credentials(\Config::get('legalesign.userid'), \Config::get('legalesign.secret'));
         }
 
         // Set up the base Guzzle object to use for all requests. We won't hardcode the Authorization header here,
@@ -164,4 +165,4 @@ class Api {
         ]);
     }
 }
-Api::Boot();
+Api::boot();

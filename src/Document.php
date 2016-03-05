@@ -49,6 +49,7 @@ class Document {
             $signer->behalfOf = $signerInfo[4];
             $signer->setStatusCode($signerInfo[6]);
             $signer->order = $signerInfo[7];
+            return $signer;
         }, $info->signers);
     }
 

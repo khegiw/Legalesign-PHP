@@ -14,7 +14,7 @@ use GuzzleHttp\Psr7;
  * @author Tyler Menezes <tylermenezes@protonmail.ch>
  */
 class Api {
-    const ApiBase = 'https://legalesign.com/api/v1';
+    const ApiBase = 'https://api.legalesign.com/api/v1';
 
     protected static $api;
     protected static $userId;

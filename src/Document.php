@@ -21,6 +21,8 @@ class Document {
     public $downloadReady;
     public $downloadHash;
 
+    public $signingUrls;
+
 
     protected function __construct($id)
     {
@@ -97,11 +99,15 @@ class Document {
     /**
      * Loads an existing document.
      *
-     * @param string    $id     The ID of the document.
+     * @param string    $id             The ID of the document.
+     * @param Object    $signingUrls    Document signing URLs.
      */
-    public static function find($id)
+    public static function find($id, $signingUrls = null)
     {
-        return new self($id);
+        $ret = new self($id);
+        $ret->signingUrls = $signingUrls;
+
+        return $ret;
     }
 
     /**

@@ -106,6 +106,12 @@ class SigningRequest {
         return $this;
     }
 
+    public function requestSignerLinks($requestSignerLinks = true)
+    {
+        $this->requestSignerLinks = $requestSignerLinks;
+        return $this;
+    }
+
     /**
      *  Adds a signer to the signing request. If signInOrder is true, the signing order will be the same as the order
      *  in which the signers were added.
@@ -146,7 +152,7 @@ class SigningRequest {
         $apiEntityUrl = $response->getHeader('Location')[0];
         $id = call_user_func(function($parts){ return $parts[count($parts) - 2]; }, explode('/', $apiEntityUrl));
 
-        return Legalesign\Document::find($id);
+        return Legalesign\Document::find($id, json_decode($response->getBody()));
     }
 
     /**

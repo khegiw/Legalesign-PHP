@@ -152,7 +152,7 @@ class SigningRequest {
         $apiEntityUrl = $response->getHeader('Location')[0];
         $id = call_user_func(function($parts){ return $parts[count($parts) - 2]; }, explode('/', $apiEntityUrl));
 
-        return Legalesign\Document::find($id, json_decode($response->getBody()));
+        return Legalesign\Document::find($id);
     }
 
     /**

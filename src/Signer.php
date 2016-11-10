@@ -31,6 +31,15 @@ class Signer {
         Api::post('signer/'.$id.'/send-reminder/', ['text' => $text]);
     }
 
+    /**
+     *  Gets the signing link.
+     */
+    public function getLink()
+    {
+        $response = Api::requestRaw('GET', 'signer/'.$this->id.'/new-link/');
+        return $response->getHeader('Location')[0];
+    }
+
     
     /**
      *  Sets the status message to something helpful, based on the unhelpful status codes provided by legalesign.

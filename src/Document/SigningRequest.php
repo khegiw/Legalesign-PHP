@@ -24,6 +24,7 @@ class SigningRequest {
     protected $signaturesOnAllPages = false;
     protected $certify = true;
     protected $signInOrder = true;
+    protected $pdfText = [];
 
     // ## Password-protection
     protected $password = null;
@@ -103,6 +104,12 @@ class SigningRequest {
     public function signInOrder($signInOrder)
     {
         $this->signInOrder = $signInOrder;
+        return $this;
+    }
+
+    public function pdfText($pdfText)
+    {
+        $this->pdfText = $pdfText;
         return $this;
     }
 
@@ -194,7 +201,8 @@ class SigningRequest {
             'return_signer_links' => $this->requestSignerLinks,
             'signature_placement' => $this->signaturesOnAllPages ? 1 : 2,
             'signature_type' => $this->certify ? 4 : 1,
-            'signers_in_order' => $this->signInOrder
+            'signers_in_order' => $this->signInOrder,
+            'pdftext' => (object) $this->pdfText
         ];
 
         // Signers

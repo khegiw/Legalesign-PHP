@@ -29,6 +29,15 @@ return [
 ];
 ```
 
+### Change API Base URL
+For some reasons, some accounts do not work with `https://api.legalesign.com/api/v1`.
+
+You can change your Base API URL by calling `apiBase()` method.
+
+```php
+Legalesign\Api::apiBase('https://eu-api.legalesign.com/api/v1');
+```
+
 ### Create a signer
 ```php
 $me = new Legalesign\Signer;

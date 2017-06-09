@@ -61,4 +61,21 @@ class Signer {
 
         $this->status = $codes[$statusCode];
     }
+
+    /**
+    * Gets the signer fields and values
+    */
+    public function getSignerFields()
+    {
+        $id = preg_replace("/[^A-Za-z0-9\- ]/", '', $this->id);
+        $response = Api::get("signer/$id/fields1/");
+        $fields = [];
+        foreach ($response as $field) {
+            $label = $field->label;
+            if ($label) {
+                $fields[$label] = $field->value;
+            }
+        }
+        return $fields;
+    }
 }

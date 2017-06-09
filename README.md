@@ -4,9 +4,20 @@ A PHP-based interface to Legalesign.
 
 ## Use
 
-Include it with Composer:
-
-`composer require tylermenezes/legalesign-php`
+In your `composer.json`, add these entries to your `repositories` and `require`.
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jestillore/legalesign-php"
+        }
+    ],
+    "require": {
+        "tylermenezes/legalesign-php": "dev-jestillore"
+    }
+}
+```
 
 ### Set your credentials
 You can view your API credentials at the bottom of [your user page](https://legalesign.com/acc/settings/).
@@ -91,6 +102,13 @@ $document = Legalesign\Document::find($documentId);
 foreach ($document->signers as $signer) {
     $fields = $signer->getSignerFields();
 }
+```
+
+The `getSignerFields()` method returns an associative array of all your signer fields. Refer below for the sample format:
+```php
+[
+    'key' => 'value'
+]
 ```
 
 ### Retrieve an existing signing request, and try to download the executed agreement.

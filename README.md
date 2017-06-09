@@ -85,6 +85,14 @@ To actually send the document, end the chain with one of the following three met
 
 All of these methods return a `Document`, of which you should generally save the `id`.
 
+### Get signer fields
+```php
+$document = Legalesign\Document::find($documentId);
+foreach ($document->signers as $signer) {
+    $fields = $signer->getSignerFields();
+}
+```
+
 ### Retrieve an existing signing request, and try to download the executed agreement.
 ```php
 $document = Legalesign\Document::find('my-document-id');

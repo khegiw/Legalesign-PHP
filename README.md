@@ -84,7 +84,8 @@ The following properties are supported:
   - `password` (default null): If set, the PDF will be password protected with the set password.
   - `storePassword` (default false): If a password is set, this affects whether Legalesign saves the password.
   - `footer`, `footerHeight`, `header`, `headerHeight` (all default null): If set, these control the footer and header.
-  - `pdfText` (default []): If set, the PDF fields will be pre-filled according to these values.
+  - `pdfText` (default []): If set, the PDF sender fields will be pre-filled according to these values.
+  - `signerText` (default []): If set, the PDF signer fields will be pre-filled according to these values.
 
 You can also add signers and cc'ers (people who will be cc'd on all emails) with the `addSigner` and `addCc` methods.
 

@@ -4,20 +4,9 @@ A PHP-based interface to Legalesign.
 
 ## Use
 
-In your `composer.json`, add these entries to your `repositories` and `require`.
-```json
-{
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/jestillore/legalesign-php"
-        }
-    ],
-    "require": {
-        "tylermenezes/legalesign-php": "dev-jestillore"
-    }
-}
-```
+Include it with Composer:
+
+`composer require tylermenezes/legalesign-php`
 
 ### Set your credentials
 You can view your API credentials at the bottom of [your user page](https://legalesign.com/acc/settings/).

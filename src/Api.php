@@ -14,8 +14,7 @@ use GuzzleHttp\Psr7;
  * @author Tyler Menezes <tylermenezes@protonmail.ch>
  */
 class Api {
-    const ApiBase = 'https://api.legalesign.com/api/v1';
-
+    protected static $apiBase = 'https://api.legalesign.com/api/v1';
     protected static $api;
     protected static $userId;
     protected static $secret;
@@ -70,7 +69,7 @@ class Api {
         }
 
         // Do the request
-        $response = self::$api->request($method, self::ApiBase.$endpoint, [
+        $response = self::$api->request($method, self::$apiBase.$endpoint, [
             'json' => $json,
             'query' => $query,
             'headers' => [
@@ -121,6 +120,16 @@ class Api {
      */
     public static function post($endpoint, $data = []) {
         return self::Request('POST', $endpoint, $data);
+    }
+
+    /**
+    * Allows the user to change the API Base URL.
+    * 
+    * @param string $apiBase The API Base URL
+    */
+    public static function apiBase($apiBase)
+    {
+        self::$apiBase = $apiBase;
     }
 
     // # Internal

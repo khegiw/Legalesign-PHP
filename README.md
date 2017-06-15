@@ -29,6 +29,15 @@ return [
 ];
 ```
 
+### Change API Base URL
+For some reasons, some accounts do not work with `https://api.legalesign.com/api/v1`.
+
+You can change your Base API URL by calling `apiBase()` method.
+
+```php
+Legalesign\Api::apiBase('https://eu-api.legalesign.com/api/v1');
+```
+
 ### Create a signer
 ```php
 $me = new Legalesign\Signer;
@@ -64,6 +73,8 @@ The following properties are supported:
   - `password` (default null): If set, the PDF will be password protected with the set password.
   - `storePassword` (default false): If a password is set, this affects whether Legalesign saves the password.
   - `footer`, `footerHeight`, `header`, `headerHeight` (all default null): If set, these control the footer and header.
+  - `pdfText` (default []): If set, the PDF sender fields will be pre-filled according to these values.
+  - `signerText` (default []): If set, the PDF signer fields will be pre-filled according to these values.
 
 You can also add signers and cc'ers (people who will be cc'd on all emails) with the `addSigner` and `addCc` methods.
 
@@ -74,6 +85,21 @@ To actually send the document, end the chain with one of the following three met
   - `sendWithTemplatePdf($template)`: Specifies a PDF template to use for the document, and sends it.
 
 All of these methods return a `Document`, of which you should generally save the `id`.
+
+### Get signer fields
+```php
+$document = Legalesign\Document::find($documentId);
+foreach ($document->signers as $signer) {
+    $fields = $signer->getSignerFields();
+}
+```
+
+The `getSignerFields()` method returns an associative array of all your signer fields. Refer below for the sample format:
+```php
+[
+    'key' => 'value'
+]
+```
 
 ### Retrieve an existing signing request, and try to download the executed agreement.
 ```php

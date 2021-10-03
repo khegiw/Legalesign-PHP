@@ -2,7 +2,7 @@
     "name": "tylermenezes/legalesign-php",
     "description": "Library for working with the Legalesign API.",
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^6.3 || ^7.0 ",
         "nesbot/carbon": "^1.26.3 || ^2.0"
     },
     "license": "Artistic",
